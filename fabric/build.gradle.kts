@@ -64,7 +64,10 @@ dependencies {
     addRuntimeFabricModule("fabric-rendering-fluids-v1")
     addRuntimeFabricModule("fabric-resource-loader-v0")
 
-    modImplementation("maven.modrinth", "sodium", "mc1.21.3-0.6.0-fabric")
+    // modImplementation("maven.modrinth", "sodium", "mc1.21-0.6.0-beta.2-fabric")
+    modImplementation("net.caffeinemc", "fabric", "0.6.0-snapshot+mc1.21.3-local") {
+        isChanging = true
+    }
     implementAndInclude("org.antlr:antlr4-runtime:4.13.1")
     implementAndInclude("io.github.douira:glsl-transformer:2.0.1")
     implementAndInclude("org.anarres:jcpp:1.4.14")
