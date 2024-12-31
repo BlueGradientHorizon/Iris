@@ -3,7 +3,10 @@ package net.irisshaders.iris.pbr.loader;
 import net.irisshaders.iris.mixin.texture.ReloadableTextureAccessor;
 import net.irisshaders.iris.pbr.texture.PBRType;
 import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.client.renderer.texture.ReloadableTexture;
 import net.minecraft.client.renderer.texture.SimpleTexture;
+import net.minecraft.client.renderer.texture.TextureContents;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.jetbrains.annotations.Nullable;
@@ -31,12 +34,22 @@ public class SimplePBRLoader implements PBRTextureLoader<SimpleTexture> {
 		ResourceLocation pbrImageLocation = imageLocation.withPath(pbrType::appendSuffix);
 
 		SimpleTexture pbrTexture = new SimpleTexture(pbrImageLocation);
-		try {
-			pbrTexture.loadContents(resourceManager);
-		} catch (IOException e) {
+		TextureContents contents = loadContentsSafe(pbrTexture, resourceManager);
+
+		if (contents == null) {
+			pbrTexture.releaseId();
 			return null;
 		}
+		pbrTexture.apply(contents);
 
 		return pbrTexture;
+	}
+
+	private TextureContents loadContentsSafe(ReloadableTexture texture, ResourceManager manager) {
+		try {
+			return texture.loadContents(manager);
+		} catch (Exception var4) {
+			return null;
+		}
 	}
 }
